@@ -294,33 +294,38 @@ exec --no-startup-id feh --randomize --bg-fill ~/Pictures/wallpapers/*
 exec --no-startup-id nm-applet --sm-disable
 
 
-
-
 ## Volume control
 
 # Path to volume control, without trailing slash
 set $volumepath /usr/bin/i3-volume
 
-# Command for the status line (used with -t, requires -u)
+# Command for the status line
 #   ie: i3blocks, i3status
 set $statuscmd i3status-rs
 
-# Signal used to update the status line (used with -u, requires -t)
+# Signal used to update the status line
 #   i3blocks uses SIGRTMIN+10 by default
 #   i3status uses SIGUSR1 by default
 set $statussig SIGUSR1
 
-# Amount to increase/decrease volume as a percentage (used with -i, -d)
+# Amount to increase/decrease volume as a percentage
 set $volumestep 5
 
-# pulseaudio-utils settings
+# alsa-utils settings
 #
-# Symbolic name for sink (numeric index not supported) (used with -s $sinkname)
-#   Recommended: comment out this setting and omit the -s option to use default sink
-#   List sink names: pacmd list-sinks | awk -F "[<>]" '/^\s+name: <.*>/{print $2}'
-#set $sinkname alsa_output.pci-0000_00_1b.0.analog-stereo
+# To configure a default card, see https://www.alsa-project.org/main/index.php/Asoundrc
+#
+# Card number to control.
+#   If not specified, i3-volume will let `amixer` use a default.
+#   List cards: aplay -l
+#set $alsacard 1
 
-# Using pulseaudio-utils (append "-s $sinkname" without quotes to override default sink)
-bindsym XF86AudioRaiseVolume exec $volumepath -np -i $volumestep -t $statuscmid -u $statussig
-bindsym XF86AudioLowerVolume exec $volumepath -np -d $volumestep -t $statuscmd -u $statussig
-bindsym XF86AudioMute        exec $volumepath -mn -t $statuscmd -u $statussig
+# append "-c $alsacard" without quotes to override default card
+#prepend -np -> -anp to use alsa
+bindsym XF86AudioRaiseVolume exec --no-startup-id $volumepath -np -t $statuscmd -u $statussig -i $volumestep
+bindsym XF86AudioLowerVolume exec --no-startup-id $volumepath -np -t $statuscmd -u $statussig -d $volumestep
+bindsym XF86AudioMute        exec --no-startup-id $volumepath -mn -t $statuscmd -u $statussig 
+
+
+#Ghidra
+for_window [class="Ghidra" instance="Ghidra" title="References"] floating enable
