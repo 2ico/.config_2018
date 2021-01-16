@@ -293,7 +293,6 @@ exec --no-startup-id feh --randomize --bg-fill ~/Pictures/wallpapers/*
 #nm-applet
 exec --no-startup-id nm-applet --sm-disable
 
-
 ## Volume control
 
 # Path to volume control, without trailing slash
@@ -311,20 +310,17 @@ set $statussig SIGUSR1
 # Amount to increase/decrease volume as a percentage
 set $volumestep 5
 
-# alsa-utils settings
+# pulseaudio-utils settings
 #
-# To configure a default card, see https://www.alsa-project.org/main/index.php/Asoundrc
-#
-# Card number to control.
-#   If not specified, i3-volume will let `amixer` use a default.
-#   List cards: aplay -l
-#set $alsacard 1
+# Symbolic name for sink (numeric index not supported)
+#   Recommended: comment out this setting and omit the -s option to use default sink
+#   List sink names: pacmd list-sinks | awk -F "[<>]" '/^\s+name: <.*>/{print $2}'
+#set $sinkname alsa_output.pci-0000_00_1b.0.analog-stereo
 
-# append "-c $alsacard" without quotes to override default card
-#prepend -np -> -anp to use alsa
-bindsym XF86AudioRaiseVolume exec --no-startup-id $volumepath -np -t $statuscmd -u $statussig -i $volumestep
-bindsym XF86AudioLowerVolume exec --no-startup-id $volumepath -np -t $statuscmd -u $statussig -d $volumestep
-bindsym XF86AudioMute        exec --no-startup-id $volumepath -mn -t $statuscmd -u $statussig 
+# Using pulseaudio-utils (append "-s $sinkname" without quotes to override default sink)
+bindsym XF86AudioRaiseVolume exec --no-startup-id $volumepath -n -t $statuscmd -u $statussig up $volumestep
+bindsym XF86AudioLowerVolume exec --no-startup-id $volumepath -n -t $statuscmd -u $statussig down $volumestep
+bindsym XF86AudioMute        exec --no-startup-id $volumepath -n -t $statuscmd -u $statussig mute
 
 
 #Ghidra
